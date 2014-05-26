@@ -6,11 +6,11 @@
 #
 import sys
 from twython import Twython
-CONSUMER_KEY = '***************YOUR DATA*****************'
-CONSUMER_SECRET = '***************YOUR DATA*****************'
-ACCESS_KEY = '***************YOUR DATA*****************'
-ACCESS_SECRET = '***************YOUR DATA*****************'
+API_KEY = '***************YOUR DATA*****************'
+API_SECRET = '***************YOUR DATA*****************'
+ACCESS_TOKEN = '***************YOUR DATA*****************'
+ACCESS_TOKEN_SECRET = '***************YOUR DATA*****************'
 
-api = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_KEY,ACCESS_SECRET) 
+api = Twython(API_KEY,API_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET) 
 
 api.update_status(status='@cheerlights My Pi wants %(color)s' % {"color": sys.argv[1]})
