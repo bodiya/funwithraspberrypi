@@ -24,9 +24,10 @@ line_length = 5
 
 #rotary encoder variables
 last_wheel_status = 0
-last_button_status = 0
 vertical = False
- 
+right_move = 0b10110100
+left_move  = 0b01111000
+
 #controls 
 def move_N(self=None):
   global y
@@ -49,38 +50,41 @@ def move_W(self=None):
   x = x - line_length
 
 #wheel functions
-def read_wheel():
+
+#bit masks to *or* when a pin becomes active, or *and* when a pin becomes inactive
+pin_masks = {24: [0b01,0b10],
+             25: [0b10,0b01]}
+
+def channel_active(channel):
   global last_wheel_status
-  left_status = GPIO.input(24) 
-  right_status = GPIO.input(25)
-  new_status = left_status | right_status << 1
-  if new_status != last_wheel_status:
-    #print "New status: %i" % (new_status)
-    execute_move(last_wheel_status,new_status,vertical)
-    last_wheel_status = new_status
+  #when using GPIO.BOTH, you can't see which edge you're on, so you must read the pin again
+  current_status = GPIO.input(channel)
+  last_status = (last_wheel_status & 0b00000011)
+  #print "Channel %i active: status(%i),last_status(%i)" % (channel,current_status,last_status)
+  
+  #determine the new position using the last reading of the other pin, plus the current reading
+  if current_status:
+    new_status = last_status | pin_masks[channel][0]
   else:
-    read_button()
-  window.after(1,read_wheel)
-
-def read_button():
-  global last_button_status
+    new_status = last_status & pin_masks[channel][1]
+  
+  #we're bound to encounter some bounce, make sure the new reading is actually new
+  if last_status == new_status:
+    #print "Bounce!"
+    return
+  
+  #update the last wheel status
+  last_wheel_status = new_status | ((last_wheel_status << 2) & 0b0011111111)
+  execute_move(last_wheel_status,vertical)
+  
+def button_pressed(channel):
   global vertical
-  button_status = GPIO.input(23) 
-  if button_status != last_button_status:
-    last_button_status = button_status
-    if button_status == 1:
-      print "Button pressed!"
-      vertical ^= True
+  print "Button pressed!"
+  vertical ^= True
 
-def execute_move(last_status,new_status,vertical):
-  right = ((last_status == 0 and new_status == 2) or
-           (last_status == 2 and new_status == 3) or
-           (last_status == 3 and new_status == 1) or
-           (last_status == 1 and new_status == 0))
-  left = ((last_status == 0 and new_status == 1) or
-          (last_status == 1 and new_status == 3) or
-          (last_status == 3 and new_status == 2) or
-          (last_status == 2 and new_status == 0))
+def execute_move(last_status,vertical):
+  right = (last_status == right_move)
+  left  = (last_status == left_move)
   if vertical and right:
     move_N()
   elif vertical and left:
@@ -89,8 +93,11 @@ def execute_move(last_status,new_status,vertical):
     move_E()
   elif left:
     move_W()
-  else:
-    print "Too slow!"
+
+#interrupts
+GPIO.add_event_detect(23, GPIO.RISING, callback=button_pressed, bouncetime=300)
+GPIO.add_event_detect(24, GPIO.BOTH, callback=channel_active, bouncetime=0)
+GPIO.add_event_detect(25, GPIO.BOTH, callback=channel_active, bouncetime=0)
 
 #main program
 window = Tk()
@@ -103,8 +110,6 @@ canvas.pack()
 #window.bind("<Down>", move_S)
 #window.bind("<Left>", move_W)
 #window.bind("<Right>", move_E)
-
-window.after(1000,read_wheel)
 
 try:
   window.mainloop()
