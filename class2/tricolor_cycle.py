@@ -5,7 +5,6 @@
 #Copyright Brian Bodiya & Tom Amlicke, 2014
 #
 import RPi.GPIO as GPIO
-import urllib2
 import time
 
 GPIO.setmode(GPIO.BCM)
@@ -36,11 +35,12 @@ colors = {'red': [100,0,0],
           'oldlace': [99,96,90]}
 
 try:
-  for last_color in colors:
-    print("Latest color: " + last_color)
-    pwmRed.ChangeDutyCycle(colors[last_color][0])
-    pwmGreen.ChangeDutyCycle(colors[last_color][1])
-    pwmBlue.ChangeDutyCycle(colors[last_color][2])
+  for current_color in colors:
+    print("Current color: " + current_color)
+    pwmRed.ChangeDutyCycle(colors[current_color][0])
+    pwmGreen.ChangeDutyCycle(colors[current_color][1])
+    pwmBlue.ChangeDutyCycle(colors[current_color][2])
     time.sleep(5)
+  GPIO.cleanup()
 except KeyboardInterrupt:
   GPIO.cleanup()
