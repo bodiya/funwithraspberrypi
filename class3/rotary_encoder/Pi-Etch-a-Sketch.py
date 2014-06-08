@@ -26,6 +26,8 @@ line_length = 5
 last_wheel_status = 0
 last_button_status = 0
 vertical = False
+right_move = 0b10110100
+left_move  = 0b01111000
  
 #controls 
 def move_N(self=None):
@@ -54,10 +56,11 @@ def read_wheel():
   left_status = GPIO.input(24) 
   right_status = GPIO.input(25)
   new_status = left_status | right_status << 1
-  if new_status != last_wheel_status:
+  last_status = (last_wheel_status & 0b00000011)
+  if new_status != last_status:
     #print "New status: %i" % (new_status)
-    execute_move(last_wheel_status,new_status,vertical)
-    last_wheel_status = new_status
+    last_wheel_status = new_status | ((last_wheel_status << 2) & 0b0011111111)
+    execute_move(last_wheel_status,vertical)
   else:
     read_button()
   window.after(1,read_wheel)
@@ -72,15 +75,9 @@ def read_button():
       print "Button pressed!"
       vertical ^= True
 
-def execute_move(last_status,new_status,vertical):
-  right = ((last_status == 0 and new_status == 2) or
-           (last_status == 2 and new_status == 3) or
-           (last_status == 3 and new_status == 1) or
-           (last_status == 1 and new_status == 0))
-  left = ((last_status == 0 and new_status == 1) or
-          (last_status == 1 and new_status == 3) or
-          (last_status == 3 and new_status == 2) or
-          (last_status == 2 and new_status == 0))
+def execute_move(last_status,vertical):
+  right = (last_status == right_move)
+  left  = (last_status == left_move)
   if vertical and right:
     move_N()
   elif vertical and left:
@@ -89,8 +86,6 @@ def execute_move(last_status,new_status,vertical):
     move_E()
   elif left:
     move_W()
-  else:
-    print "Too slow!"
 
 #main program
 window = Tk()

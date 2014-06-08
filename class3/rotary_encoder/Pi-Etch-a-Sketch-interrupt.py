@@ -5,6 +5,7 @@
 #Copyright Brian Bodiya & Tom Amlicke, 2014
 #
 import RPi.GPIO as GPIO
+import threading
 from Tkinter import *
 
 GPIO.setmode(GPIO.BCM)
@@ -24,30 +25,37 @@ line_length = 5
 
 #rotary encoder variables
 last_wheel_status = 0
+wheel_status_lock = threading.Lock()
+move_lock = threading.Lock()
+bounce_count = 0
 vertical = False
 right_move = 0b10110100
 left_move  = 0b01111000
 
 #controls 
 def move_N(self=None):
-  global y
-  canvas.create_line(x, y, x, (y-line_length), width=line_width, fill=color)
-  y = y - line_length
+  with move_lock:
+    global y
+    canvas.create_line(x, y, x, (y-line_length), width=line_width, fill=color)
+    y = y - line_length
  
 def move_S(self=None):
-  global y
-  canvas.create_line(x, y, x, y+line_length, width=line_width, fill=color)
-  y = y + line_length
+  with move_lock:
+    global y
+    canvas.create_line(x, y, x, y+line_length, width=line_width, fill=color)
+    y = y + line_length
  
 def move_E(self=None):
-  global x
-  canvas.create_line(x, y, x + line_length, y, width=line_width, fill=color)
-  x = x + line_length
+  with move_lock:
+    global x
+    canvas.create_line(x, y, x + line_length, y, width=line_width, fill=color)
+    x = x + line_length
  
 def move_W(self=None):
-  global x
-  canvas.create_line(x, y, x - line_length, y, width=line_width, fill=color)
-  x = x - line_length
+  with move_lock:
+    global x
+    canvas.create_line(x, y, x - line_length, y, width=line_width, fill=color)
+    x = x - line_length
 
 #wheel functions
 
@@ -56,7 +64,9 @@ pin_masks = {24: [0b01,0b10],
              25: [0b10,0b01]}
 
 def channel_active(channel):
+  wheel_status_lock.acquire()
   global last_wheel_status
+
   #when using GPIO.BOTH, you can't see which edge you're on, so you must read the pin again
   current_status = GPIO.input(channel)
   last_status = (last_wheel_status & 0b00000011)
@@ -70,17 +80,25 @@ def channel_active(channel):
   
   #we're bound to encounter some bounce, make sure the new reading is actually new
   if last_status == new_status:
-    #print "Bounce!"
+    global bounce_count
+    bounce_count += 1
+    wheel_status_lock.release()
     return
   
   #update the last wheel status
   last_wheel_status = new_status | ((last_wheel_status << 2) & 0b0011111111)
+  new_status = last_wheel_status
+
+  #release the lock on last_wheel_status, then execute the move
+  wheel_status_lock.release()
   execute_move(last_wheel_status,vertical)
-  
+
 def button_pressed(channel):
-  global vertical
+  global vertical, bounce_count
   print "Button pressed!"
+  print "%i bounces since last press" % bounce_count
   vertical ^= True
+  bounce_count = 0
 
 def execute_move(last_status,vertical):
   right = (last_status == right_move)
