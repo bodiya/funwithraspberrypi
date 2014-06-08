@@ -14,6 +14,6 @@ while seconds < 20:
   color = urllib2.urlopen(url).read()
   print("Latest color: " + color)
   seconds = seconds + 5
-  time.sleep(5)
+  time.sleep(1)
 else:
   print "Done!"
