@@ -17,7 +17,7 @@ def update_color():
   color = urllib2.urlopen(url).read()
   print("Latest color: " + color)
   root.configure(background=color)
-  root.after(5000,update_color)
+  root.after(1000,update_color)
 root.after(1000,update_color)
 
 root.mainloop()

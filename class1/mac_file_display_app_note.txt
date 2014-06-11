@@ -1,0 +1,68 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+# Some materials adapted from:
+# http://gettingstartedwithraspberrypi.tumblr.com/post/24400361937/finding-your-vnc-server-using-bonjour
+# http://gettingstartedwithraspberrypi.tumblr.com/post/24398167109/file-sharing-with-afp-and-auto-discovery-with-bonjour
+
+
+This app note will configure the Raspberry Pi to use Bonjour to make itself visible to the network and allow to show up in a Mac Finder for file sharing and screen sharing.
+
+Steps to enable file sharing
+
+1. Install netatalk
+
+$ sudo apt-get install netatalk
+
+2. The latest distribute of Raspbian already includes avahi-daemon.  If you are using an older ditribution you may need to install it.
+
+$ sudo apt-get install avahi-daemon
+
+3. Configure the avahi_daemon in inetd
+
+$ sudo update-rc.d avahi-daemon defaults
+
+4. Create the service file to allow file sharing.
+
+$ sudo nano /etc/avahi/services/afpd.service
+
+8<-----------------------------------
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+   <name replace-wildcards="yes">%h</name>
+   <service>
+      <type>_afpovertcp._tcp</type>
+      <port>548</port>
+   </service>
+</service-group>
+8<------------------------------------
+
+5. Restart the avahi daemon
+
+$ sudo /etc/init.d/avahi-daemon restart 
+
+
+Sharing the Pi Screen
+
+1. sudo nano /etc/avahi-daemon/services/rfb.service
+
+8<---------------------------------------------------
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+  <name replace-wildcards="yes">%h</name>
+  <service>
+    <type>_rfb._tcp</type>
+    <port>5901</port>
+  </service>
+</service-group>
+8<---------------------------------------------------
+
+2. Restart the avahi daemon
+
+$ sudo /etc/init.d/avahi-daemon restart
+
