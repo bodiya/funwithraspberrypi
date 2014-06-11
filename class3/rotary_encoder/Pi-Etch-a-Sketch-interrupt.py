@@ -131,6 +131,7 @@ canvas.pack()
 
 try:
   window.mainloop()
+  GPIO.cleanup()
 except KeyboardInterrupt:
   GPIO.cleanup()
 

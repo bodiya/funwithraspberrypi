@@ -103,6 +103,7 @@ window.after(1000,read_wheel)
 
 try:
   window.mainloop()
+  GPIO.cleanup()
 except KeyboardInterrupt:
   GPIO.cleanup()
 
