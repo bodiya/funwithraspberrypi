@@ -41,9 +41,9 @@ try:
   while 1:
     last_color = urllib2.urlopen(url).read()
     print("Latest color: " + last_color)
-	pwmRed.ChangeDutyCycle(colors[last_color][0])
-	pwmGreen.ChangeDutyCycle(colors[last_color][1])
-	pwmBlue.ChangeDutyCycle(colors[last_color][2])
-	time.sleep(5)
+    pwmRed.ChangeDutyCycle(colors[last_color][0])
+    pwmGreen.ChangeDutyCycle(colors[last_color][1])
+    pwmBlue.ChangeDutyCycle(colors[last_color][2])
+    time.sleep(5)
 except KeyboardInterrupt:
   GPIO.cleanup()

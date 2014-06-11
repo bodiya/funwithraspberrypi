@@ -8,9 +8,9 @@ import RPi.GPIO as GPIO
 import time
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(22, GPIO.OUT)
-GPIO.setup(27, GPIO.OUT)
-GPIO.setup(17, GPIO.OUT)
+#
+# TODO - set the input/output mode for the appropriate pins
+#
 
 pwmRed = GPIO.PWM(22, 500)
 pwmRed.start(100)
