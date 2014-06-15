@@ -5,10 +5,11 @@
 #
 #Copyright Brian Bodiya & Tom Amlicke, 2014
 #
-import os
 import glob
-import time
 import httplib, urllib
+import os
+import sys
+import time
 
 os.system('modprobe w1-gpio pullup=1')
 os.system('modprobe w1-therm strong_pullup=1')
