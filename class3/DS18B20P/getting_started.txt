@@ -1,0 +1,29 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+
+1. Load the w1-gpio kernel module
+   (make sure to use pullup=1 for the parasite power sensor)
+$ sudo modprobe w1-gpio pullup=1
+
+2. Load the w1-therm kernel module
+   (make sure to use strong_pullup=1 for the parasite power sensor)
+$ sudo modprobe w1-therm strong_pullup=1
+
+3. See if the sensor was detected
+$ cd /sys/bus/w1/devices
+
+There should be at least one directory like 28-*
+If there's not, double check your connections and repeat steps 1-3
+Then cd into the directory.
+$ cd 28-*
+
+4. Read the current temperature via the filesystem
+$ cat w1_slave
+
+If you get bogus values (for example, very high numbers that don't change)
+then make sure the sensor has power, and that you used the
+pullup and strong_pullup options when loading the kernel modules
