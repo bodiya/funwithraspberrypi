@@ -1,0 +1,23 @@
+1. Remove I2C from the module blacklist
+  $ sudo nano /etc/modprobe.d/raspi-blacklist.conf
+
+2. Update (w/ sudo) /etc/modules, add this line:
+i2c-dev
+
+3. Install i2c tools
+  $ sudo apt-get update
+  $ sudo apt-get install i2c-tools
+
+4. Install the i2c Python module
+  $ sudo apt-get install python-smbus
+
+5. Add the pi user to the i2c group
+  $ sudo adduser pi i2c
+
+6. Create the circuit
+
+7. Make sure you can detect the PCF8591P (Should show address 0x48)
+  $ i2cdetect -y 1
+
+8. Read the ADC channel (try moving the POT to see it change)
+  $ i2cget -y 1 0x48
