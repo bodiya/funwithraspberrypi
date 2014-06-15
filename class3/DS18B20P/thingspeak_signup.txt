@@ -1,0 +1,16 @@
+1. Create a ThingSpeak account: https://thingspeak.com/users/sign_up
+
+2. Go to Channels: https://thingspeak.com/channels
+
+3. Create a new channel by clicking the "Create New Channel" button.
+
+4. Fill in the following fields:
+ - Name: (pick one, or leave it)
+ - Description: Internet of Things exercise from the Fun With Raspberry Pi course.
+ - Field 1: degrees F
+
+5. Go the the "API Keys" tab
+
+6. Copy down your "Write API Key".  You'll use this in the exercise.
+
+BE AWARE: ThingSpeak has a rate limit of 4 updates per minute (one every 15 seconds)
