@@ -4,13 +4,22 @@ from time import sleep
 
 # comment out the one that does not apply to your board
 bus = SMBus(1) # for revision 2 boards
-address = 74
+address = 0x48
 control = 1<<6 # enable analog output
 
-print(“Output a ramp on the D/A”)
-print(“Ctrl C to stop”)
+print("Output a ramp on the D/A")
+print("Ctrl C to stop")
 
-while True:
-    for a in range(0,256):
-        bus.write_byte_data(address, control, a) # output to D/A
-        sleep(0.01)
+try:
+  modifier = 1
+  a = 100
+  while True:
+    bus.write_byte_data(address, control, a) # output to D/A
+    sleep(0.01)
+    a += modifier
+    if a < 100 or a > 254:
+      modifier *= -1
+except KeyboardInterrupt:
+  bus.write_byte_data(address, control, 0)
+  print "Resetting Analog Out to 0. Exiting."
+  exit()
