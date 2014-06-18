@@ -17,7 +17,6 @@ os.system('modprobe w1-therm strong_pullup=1')
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
-#TODO 1: insert your write API key here
 apikey='INSERT_WRITE_API_KEY_HERE'
 
 def read_temp_raw():
@@ -42,8 +41,7 @@ def read_temp():
 def post_temp(deg_f):
   print "Updating Thingspeak with:", deg_f
   params = urllib.urlencode({'field1':deg_f,'key':apikey})
-  headers = {"Content-type": "application/x-www-form-urlencoded",
-             "Accept": "text/plain"}
+  headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
   conn = httplib.HTTPConnection("api.thingspeak.com:80")
   conn.request("POST", "/update", params, headers)
   ts_response = conn.getresponse()
@@ -52,8 +50,10 @@ def post_temp(deg_f):
 
 while True:
   try:
-    #TODO 2: Read the temperature and log to ThingSpeak
-    #TODO 3: Don't forget about the rate limit!
+    latest_temp = read_temp()
+    if isinstance(latest_temp, float):
+      post_temp(latest_temp)
+    time.sleep(20)
   except KeyboardInterrupt:
     exit()
   except:
