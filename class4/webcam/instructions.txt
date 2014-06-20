@@ -1,0 +1,38 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+
+#
+# Install mjpg-streamer
+#
+
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get install subversion
+
+$ svn co https://svn.code.sf.net/p/mjpg-streamer/code mjpg-streamer
+$ cd mjpg-streamer/mjpg-streamer
+
+$ sudo apt-get install libjpeg8-dev
+$ sudo apt-get install imagemagick
+
+$ make USE_LIBV4L2=false clean all
+
+$ sudo make DESTDIR=/usr install
+
+$ ./start_server.sh
+
+
+#
+#  Open a browser on your laptop
+#
+#  To see the stream:
+#  http://10.168.2.31:8090/?action=stream
+# 
+#  To see a snapshot:
+#  http://10.168.2.31:8090/?action=snapshot
+# 
+
