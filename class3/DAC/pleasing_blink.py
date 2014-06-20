@@ -14,6 +14,9 @@ try:
   modifier = 1
   a = 100
   while True:
+    #TODO: make the LED even *more* pleasing by having the
+    #intensity follow a sine wave, rather than just increase/decrease
+    #at a linear rate.
     bus.write_byte_data(address, control, a) # output to D/A
     sleep(0.01)
     a += modifier

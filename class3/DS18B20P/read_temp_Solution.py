@@ -27,13 +27,12 @@ def read_temp():
       return "Error reading temperator"
   temp_string = lines[1][equals_pos+2:]
   temp_c = float(temp_string) / 1000.0
-  temp_f = 0 #TODO 1: convert the temperature to Fahrenheit
+  temp_f = temp_c * 9.0 / 5.0 + 32.0
   return temp_c, temp_f
 
 while True:
   try:
-    #TODO 2: Do something with the temperature
-    #        (e.g. print it, display diff between readings, etc.)
+    print(read_temp())
     time.sleep(1)
   except KeyboardInterrupt:
     exit()

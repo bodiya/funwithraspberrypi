@@ -25,12 +25,14 @@ last_reading = -1
 while True: 
   try:
     reading = bus.read_byte(address)
-    #TODO 1: only trip on a decently large change
-    #use read_analog.py to determine what's appropriate,
-    #then enter it in TODO1_VALUE
-    if(abs(last_reading - reading) > TODO1_VALUE):
-      #TODO 2: Determine whether the lights are being turned
-      #on or off and print a message for each
+    #only trip on a decently large change
+    #use read_analog.py to determine what's appropriate
+    if(abs(last_reading - reading) > 10):
+      #print "A/D reading %i meaning %.2fV" % (reading,(convert * reading))
+      if (last_reading > reading):
+        print "\nWho turned the lights OFF?!"
+      else:
+        print "\nWho turned the lights ON?!"
       last_reading = reading
     time.sleep(2)
   except KeyboardInterrupt:
