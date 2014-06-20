@@ -1,0 +1,56 @@
+
+# raspistill examples
+
+# Take a photo at max resolution in 2 seconds
+
+$ raspistill -t 2000 -o image1.jpg
+
+
+# Take a photo at 640x480 resolution
+
+$ raspistill -t 2000 -o image2.jpg -w 640 -h 480
+
+
+# Take a photo with low quality
+
+$ raspistill -t 2000 -o image3.jpg -q 5
+
+
+# Take a photo and create a png file format  (Does it take longer to create?) 
+
+$ raspistill -t 2000 -o image4.jpg -e png
+
+
+# Sign the photo with your name
+
+$ raspistill -t 2000 -o image5.jpg -x IFD0.Artist=<your name>
+
+
+# Try out some effects (none, negative, solarise, sketch, denoise, emboss, oilpaint, hatch, gpen, pastel, watercolour, film, blur, saturation, colourswap, washedout, posterise, colourpoint, colourbalance, cartoon)
+
+$ raspistill -t 2000 -o image6.jpg -ifx <effect>
+
+
+# Take a black and white photo
+
+$ raspistill -t 2000 -o image7.jpg -cfx 128:128
+
+
+# Time lapse photography - take photo every 10 seconds for 2 minutes
+
+$ raspistill -t 120000 -tl 10000 -o image_num_%03d.jpg -l latest.jpg 
+
+
+#
+# raspivid
+#
+
+# Create a 5 sec HD clip of video
+
+$ raspivid -t 5000 -o hd.h264
+
+
+# Create a 5 sec 640x480 resolution video
+
+$ raspivid -t 5000 -w 640 -h 480 -o low.h264
+ 
