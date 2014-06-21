@@ -13,6 +13,8 @@ camera = picamera.PiCamera()
 try:
     camera.start_preview()
     time.sleep(2)
+    camera.hflip = True
+    camera.vflip = True
     camera.capture('photo.jpg')
     camera.stop_preview()
 finally:
