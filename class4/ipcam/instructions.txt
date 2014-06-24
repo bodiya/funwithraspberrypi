@@ -23,6 +23,7 @@ $ make USE_LIBV4L2=false clean all
 
 $ sudo make DESTDIR=/usr install
 
+$ cd ../..
 $ ./start_server.sh
 
 
