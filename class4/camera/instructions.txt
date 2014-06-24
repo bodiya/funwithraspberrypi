@@ -47,16 +47,4 @@ $ raspistill -t 2000 -o image7.jpg -cfx 128:128
 $ raspistill -t 120000 -tl 10000 -o image_num_%03d.jpg -l latest.jpg 
 
 
-#
-# raspivid
-#
-
-# Create a 5 sec HD clip of video
-
-$ raspivid -t 5000 -o hd.h264
-
-
-# Create a 5 sec 640x480 resolution video
-
-$ raspivid -t 5000 -w 640 -h 480 -o low.h264
  

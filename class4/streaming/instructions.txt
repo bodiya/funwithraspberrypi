@@ -6,6 +6,21 @@
 #
 
 #
+# Using raspivid from the command-line
+# See pdf file in ../camera for more details
+#
+
+# Create a 5 sec HD clip of video
+
+$ raspivid -t 5000 -o hd.h264
+
+
+# Create a 5 sec 640x480 resolution video
+
+$ raspivid -t 5000 -w 640 -h 480 -o low.h264
+
+
+#
 # Install vlc
 #
 
