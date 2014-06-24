@@ -10,7 +10,6 @@
 #
 
 $ sudo apt-get update
-$ sudo apt-get upgrade
 $ sudo apt-get install subversion
 
 $ svn co https://svn.code.sf.net/p/mjpg-streamer/code mjpg-streamer
