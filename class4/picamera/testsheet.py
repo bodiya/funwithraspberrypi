@@ -8,11 +8,11 @@
 import picamera
 
 with picamera.PiCamera() as camera:
+    camera.hflip = True
+    camera.vflip = True            
     camera.start_preview()
     try:
         for i in range(10):
-            camera.hflip = True
-            camera.vflip = True            
             # TODO: Choose a different parameter to change in your test sheet
             camera.brightness = i*10
             camera.capture('sheet%03i.jpg' % i)
