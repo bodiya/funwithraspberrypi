@@ -22,6 +22,6 @@ $ raspivid -o - -t 9999999 -hf -vf -w 320 -h 240 -ex night | cvlc -vvv stream://
 #  Open a browser that supports rtsp or vlc on your laptop
 #
 #  To see the stream:
-#  http://10.168.2.31:8554/pi.sdp
+#  rtsp://10.168.2.31:8554/pi.sdp
 # 
 
