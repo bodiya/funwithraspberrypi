@@ -24,7 +24,7 @@ $ raspistill -t 2000 -o image3.jpg -q 5
 
 # Take a photo and create a png file format  (Does it take longer to create?) 
 
-$ raspistill -t 2000 -o image4.jpg -e png
+$ raspistill -t 2000 -o image4.png -e png
 
 
 # Sign the photo with your name
@@ -43,7 +43,7 @@ $ raspistill -t 2000 -o image7.jpg -cfx 128:128
 
 
 # Time lapse photography - take photo every 10 seconds for 2 minutes
-
+# with the latest picture always being named latest.jpg
 $ raspistill -t 120000 -tl 10000 -o image_num_%03d.jpg -l latest.jpg 
 
 
