@@ -1,0 +1,80 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+# Adapted from http://rbnrpi.wordpress.com/project-list/setting-up-wireless-motion-detect-cam/
+
+#
+# Install Motion Debian Package
+#
+
+$ sudo apt-get install motion
+
+
+#
+# Install libjpeg62 library
+#
+
+$ sudo apt-get install libjpeg62
+
+
+#
+# Install a modified version of Motion created by dozencrows
+#
+
+$ cd ~/
+$ mkdir mmal
+$ cd mmal
+
+$ wget https://www.dropbox.com/s/xdfcxm5hu71s97d/motion-mmal.tar.gz
+
+$ tar -zxvf motion-mmal.tar.gz
+
+#
+# Configure the motion application
+#
+
+$ nano motion-mmalcam.conf
+
+Update the following names with the values indicated:
+
+width 640
+
+height 480
+
+rotate 180
+
+target_dir /home/pi/m-video
+
+output_pictures off
+
+text_left Pi-cam %t
+
+logfile /home/pi/mmal/motion
+
+
+#
+# Rename modified motion file
+#
+
+$ mv motion motion-mmal
+
+
+#
+# Start the motion application
+#
+
+$ ./motion-mmal -n -c motion-mmalcam.conf
+
+
+#
+# Access camera video from laptop browser. 
+#
+
+http://10.168.2.31:8081/ or over your WIFI address
+
+Some browsers do not work.  Try Firefox, Chrome, or on Mac Safari.  IE may not work.
+
+
