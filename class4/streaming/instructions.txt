@@ -25,3 +25,11 @@ $ raspivid -o - -t 9999999 -hf -vf -w 320 -h 240 -ex night | cvlc -vvv stream://
 #  rtsp://10.168.2.31:8554/pi.sdp
 # 
 
+# If a browser is not working then you can download the vlc client
+#
+# http://www.videolan.org/vlc/index.html 
+#
+# 1. Start the app
+# 2. Select Media->Open Network Stream...
+# 3. Enter URL: rtsp://10.168.2.31:8554/pi.sdp
+
