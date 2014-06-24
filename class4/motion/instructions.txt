@@ -52,7 +52,7 @@ output_pictures off
 
 text_left Pi-cam %t
 
-logfile /home/pi/mmal/motion
+logfile /home/pi/mmal/motion.log
 
 
 #
