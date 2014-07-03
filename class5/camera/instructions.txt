@@ -1,0 +1,68 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+
+
+# 
+# Create your own color tracking algorithm
+#
+
+# Create the Raspberry Pi object.  I clear any old Raspbery Pi object because I'm not sure what state I left it in.
+
+>> clear rpi
+>> rpi = raspi();
+
+# Create the cameraboard object and pass in the 'Resolution' name-value pair.  Note: The default is actually640 x 480 so this is not necessary.
+
+>> cam = cameraboard(rpi, 'Resolution', '640x480');
+
+# Take a snapshot with the camers
+
+>> img = snapshot(cam);
+
+# Display the image in a figure window
+
+>> imagesc(img);
+
+# Separate the image into its color components by creating three new images
+
+>> red = img(:,:,1);
+>> green = img(:,:,2);
+>> blue = img(:,:,3);
+
+# You can look at each of the components using the imagesc command
+
+>> figure;
+>> imagesc(red);
+>> figure;
+>> imagesc(green);
+>> figure;
+>> imagesc(blue);
+
+# Let's look at just the green component of the image. Depending on the object we want to track we could also get justBlue or justRed by changing the formula below.
+
+>> justGreen = green - red/2 - blue/2;
+
+# Now let's picture a threshold to determine the region of our image that contains the color we want to track. The threshold of 40  may need to be changed based of the lighting of the room. 
+
+>> bw = justGreen > 40;
+
+# Now we find the center of the color region and mark it with a box
+
+[x, y] = find(bw);
+    if ~isempty(x) && ~isempty(y)
+        xm = round(mean(x));
+        ym = round(mean(y));
+        xx = max(1, xm-5):min(xm+5, size(bw, 1));
+        yy = max(1, ym-5):min(ym+5, size(bw, 2));
+        bwbw = zeros(size(bw), 'uint8');
+        bwbw(xx, yy) = 255;
+        imagesc(justGreen + bwbw);
+    end
+
+
+# Let's combine all the commands above into a script and run it in a loop.  The the rectangle should track the center of the color region of the object containing the color.
+
