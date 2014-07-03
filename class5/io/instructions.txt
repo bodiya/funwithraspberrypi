@@ -1,0 +1,55 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+
+#
+# Try out the system command to execute a command on the Pi
+#
+
+>> rpi = raspi();
+>> system(rpi, 'ls -al /home/pi')
+
+
+#
+# Launch a remote terminal window on the Pi
+#
+
+>> clear rpi
+>> rpi = raspi();
+>> openShell(rpi)
+
+#
+# Get a file from the Pi
+#
+
+>> clear rpi
+>> rpi = raspi();
+>> getFile(rpi, '/home/pi/ocr_pi.png');
+>> img = imread('ocr_pi.png');
+>> imagesc(img);
+
+
+#
+# Move a file to the Pi
+#
+
+>> clear rpi
+>> rpi = raspi();
+>> putFile(rpi,'ocr_pi.png','/jome/pi/copy.png');
+>> system(rpi,'ls -l /home/pi');
+
+
+#
+# Control the LED on the Pi
+#
+
+>> clear rpi
+>> rpi = raspi();
+>> led = rpi.AvailableLEDs{1};
+>> writeLED(rpi,led,1);
+>> writeLED(rpi,led,0);
+
+
