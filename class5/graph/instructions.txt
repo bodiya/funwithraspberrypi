@@ -1,0 +1,17 @@
+#Fun with Raspberry Pi by Brian Bodiya & Tom Amlicke is licensed under a
+#Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#Based on a work at https://github.com/bodiya/funwithraspberrypi.
+#
+#Copyright Brian Bodiya & Tom Amlicke, 2014
+#
+
+#
+# Create a simple MATLAB script to determine which i2c addresses are in use.
+#
+
+#
+# Create a GUIDE application to monitor and plot the readings from your light 
+# sensor.
+#
+
+# Solutions are provided in the directory.
