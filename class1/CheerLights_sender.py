@@ -13,4 +13,6 @@ ACCESS_TOKEN_SECRET = '***************YOUR DATA*****************'
 
 api = Twython(API_KEY,API_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET) 
 
-api.update_status(status='@cheerlights My Pi wants %(color)s' % {"color": sys.argv[1]})
+name = TODO
+
+api.update_status(status='@cheerlights %(name)s Pi wants %(color)s' % {"color": sys.argv[1],"name": name})
