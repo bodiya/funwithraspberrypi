@@ -9,7 +9,7 @@ import threading
 from Tkinter import *
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_UP)
+GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(24,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(25,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
@@ -32,34 +32,10 @@ vertical = False
 right_move = 0b10110100
 left_move  = 0b01111000
 
-#controls 
-def move_N(self=None):
-  with move_lock:
-    global y
-    canvas.create_line(x, y, x, (y-line_length), width=line_width, fill=color)
-    y = y - line_length
- 
-def move_S(self=None):
-  with move_lock:
-    global y
-    canvas.create_line(x, y, x, y+line_length, width=line_width, fill=color)
-    y = y + line_length
- 
-def move_E(self=None):
-  with move_lock:
-    global x
-    canvas.create_line(x, y, x + line_length, y, width=line_width, fill=color)
-    x = x + line_length
- 
-def move_W(self=None):
-  with move_lock:
-    global x
-    canvas.create_line(x, y, x - line_length, y, width=line_width, fill=color)
-    x = x - line_length
-
 #wheel functions
 
-#bit masks to *or* when a pin becomes active, or *and* when a pin becomes inactive
+#bit masks to *or* when a pin becomes active, or *and* when a pin
+#becomes inactive
 pin_masks = {24: [0b01,0b10],
              25: [0b10,0b01]}
 
@@ -67,18 +43,21 @@ def channel_active(channel):
   wheel_status_lock.acquire()
   global last_wheel_status
 
-  #when using GPIO.BOTH, you can't see which edge you're on, so you must read the pin again
+  #when using GPIO.BOTH, you can't see which edge you're on,
+  #so you must read the pin again
   current_status = GPIO.input(channel)
   last_status = (last_wheel_status & 0b00000011)
   #print "Channel %i active: status(%i),last_status(%i)" % (channel,current_status,last_status)
   
-  #determine the new position using the last reading of the other pin, plus the current reading
+  #determine the new position using the last reading of the other pin,
+  #plus the current reading
   if current_status:
     new_status = last_status | pin_masks[channel][0]
   else:
     new_status = last_status & pin_masks[channel][1]
   
-  #we're bound to encounter some bounce, make sure the new reading is actually new
+  #we're bound to encounter some bounce, make sure the new reading
+  #is actually new
   if last_status == new_status:
     global bounce_count
     bounce_count += 1
@@ -112,10 +91,35 @@ def execute_move(last_status,vertical):
   elif left:
     move_W()
 
+#controls 
+def move_N(self=None):
+  with move_lock:
+    global y
+    canvas.create_line(x, y, x, (y-line_length), width=line_width, fill=color)
+    y = y - line_length
+ 
+def move_S(self=None):
+  with move_lock:
+    global y
+    canvas.create_line(x, y, x, y+line_length, width=line_width, fill=color)
+    y = y + line_length
+ 
+def move_E(self=None):
+  with move_lock:
+    global x
+    canvas.create_line(x, y, x + line_length, y, width=line_width, fill=color)
+    x = x + line_length
+ 
+def move_W(self=None):
+  with move_lock:
+    global x
+    canvas.create_line(x, y, x - line_length, y, width=line_width, fill=color)
+    x = x - line_length
+
 #interrupts
 GPIO.add_event_detect(23, GPIO.RISING, callback=button_pressed, bouncetime=300)
-GPIO.add_event_detect(24, GPIO.BOTH, callback=channel_active, bouncetime=0)
-GPIO.add_event_detect(25, GPIO.BOTH, callback=channel_active, bouncetime=0)
+GPIO.add_event_detect(24, GPIO.BOTH, callback=channel_active, bouncetime=1)
+GPIO.add_event_detect(25, GPIO.BOTH, callback=channel_active, bouncetime=1)
 
 #main program
 window = Tk()

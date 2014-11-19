@@ -6,9 +6,10 @@
 #
 import RPi.GPIO as GPIO
 from Tkinter import *
+from rotary import read_wheel, read_button
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_UP)
+GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(24,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(25,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
@@ -28,6 +29,31 @@ last_button_status = 0
 vertical = False
 right_move = 0b10110100
 left_move  = 0b01111000
+
+def read_encoder():
+  global last_button_status
+  global vertical
+  vertical,last_button_status = read_button(last_button_status,vertical)
+  
+  global last_wheel_status
+  new_wheel_status = read_wheel(last_wheel_status)
+  if new_wheel_status != last_wheel_status:
+    last_wheel_status = new_wheel_status
+    #print "last_wheel_status = %d" % last_wheel_status
+    execute_move(last_wheel_status,vertical)
+  window.after(1,read_encoder)
+
+def execute_move(last_status,vertical):
+  right = (last_status == right_move)
+  left  = (last_status == left_move)
+  if vertical and right:
+    move_N()
+  elif vertical and left:
+    move_S()
+  elif right:
+    move_E()
+  elif left:
+    move_W()
  
 #controls 
 def move_N(self=None):
@@ -50,43 +76,6 @@ def move_W(self=None):
   canvas.create_line(x, y, x - line_length, y, width=line_width, fill=color)
   x = x - line_length
 
-#wheel functions
-def read_wheel():
-  global last_wheel_status
-  left_status = GPIO.input(24) 
-  right_status = GPIO.input(25)
-  new_status = left_status | right_status << 1
-  last_status = (last_wheel_status & 0b00000011)
-  if new_status != last_status:
-    #print "New status: %i" % (new_status)
-    last_wheel_status = new_status | ((last_wheel_status << 2) & 0b0011111111)
-    execute_move(last_wheel_status,vertical)
-  else:
-    read_button()
-  window.after(1,read_wheel)
-
-def read_button():
-  global last_button_status
-  global vertical
-  button_status = GPIO.input(23) 
-  if button_status != last_button_status:
-    last_button_status = button_status
-    if button_status == 1:
-      print "Button pressed!"
-      vertical ^= True
-
-def execute_move(last_status,vertical):
-  right = (last_status == right_move)
-  left  = (last_status == left_move)
-  if vertical and right:
-    move_N()
-  elif vertical and left:
-    move_S()
-  elif right:
-    move_E()
-  elif left:
-    move_W()
-
 #main program
 window = Tk()
 window.title("Pi-Etch-A-Sketch")
@@ -99,7 +88,8 @@ canvas.pack()
 #window.bind("<Left>", move_W)
 #window.bind("<Right>", move_E)
 
-window.after(1000,read_wheel)
+#give the window a second to finish being drawn before looking for input
+window.after(1000,read_encoder)
 
 try:
   window.mainloop()

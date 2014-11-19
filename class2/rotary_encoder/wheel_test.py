@@ -9,8 +9,10 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(25,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
 last_status = 0
+last_button_status = 0
 try:
   while 1:
     left_status = GPIO.input(24) 
@@ -19,5 +21,11 @@ try:
     if new_status != last_status:
       print "New status: %i" % (new_status)
       last_status = new_status
+      
+    button_status = GPIO.input(23) 
+    if button_status != last_button_status:
+      last_button_status = button_status
+      if button_status == 1:
+        print "Button Pressed!"
 except KeyboardInterrupt:
   GPIO.cleanup()
