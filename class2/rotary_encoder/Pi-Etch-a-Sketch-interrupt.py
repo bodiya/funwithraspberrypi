@@ -7,6 +7,7 @@
 import RPi.GPIO as GPIO
 import threading
 from Tkinter import *
+from rotary import *
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(23,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
@@ -27,17 +28,11 @@ line_length = 5
 last_wheel_status = 0
 wheel_status_lock = threading.Lock()
 move_lock = threading.Lock()
-bounce_count = 0
 vertical = False
 right_move = 0b10110100
 left_move  = 0b01111000
 
 #wheel functions
-
-#bit masks to *or* when a pin becomes active, or *and* when a pin
-#becomes inactive
-pin_masks = {24: [0b01,0b10],
-             25: [0b10,0b01]}
 
 def channel_active(channel):
   wheel_status_lock.acquire()
@@ -46,38 +41,27 @@ def channel_active(channel):
   #when using GPIO.BOTH, you can't see which edge you're on,
   #so you must read the pin again
   current_status = GPIO.input(channel)
-  last_status = (last_wheel_status & 0b00000011)
+  last_status = get_last_status(last_wheel_status)
   #print "Channel %i active: status(%i),last_status(%i)" % (channel,current_status,last_status)
   
-  #determine the new position using the last reading of the other pin,
-  #plus the current reading
-  if current_status:
-    new_status = last_status | pin_masks[channel][0]
-  else:
-    new_status = last_status & pin_masks[channel][1]
+  new_status = get_new_status_threaded(current_status, last_status, channel)
   
-  #we're bound to encounter some bounce, make sure the new reading
-  #is actually new
+  #even with bouncetime=1, we might encounter bounce, better safe than sorry
   if last_status == new_status:
-    global bounce_count
-    bounce_count += 1
     wheel_status_lock.release()
     return
   
   #update the last wheel status
-  last_wheel_status = new_status | ((last_wheel_status << 2) & 0b0011111111)
-  new_status = last_wheel_status
+  last_wheel_status = get_new_wheel_status(last_wheel_status, new_status)
 
   #release the lock on last_wheel_status, then execute the move
   wheel_status_lock.release()
   execute_move(last_wheel_status,vertical)
 
 def button_pressed(channel):
-  global vertical, bounce_count
+  global vertical
   print "Button pressed!"
-  print "%i bounces since last press" % bounce_count
   vertical ^= True
-  bounce_count = 0
 
 def execute_move(last_status,vertical):
   right = (last_status == right_move)
