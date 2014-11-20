@@ -145,11 +145,11 @@ def channel_active(channel):
 GPIO.add_event_detect(R_WHEEL_PIN,
                       GPIO.BOTH,
                       callback=channel_active,
-                      bouncetime=0)
+                      bouncetime=1)
 GPIO.add_event_detect(L_WHEEL_PIN,
                       GPIO.BOTH,
                       callback=channel_active,
-                      bouncetime=0)
+                      bouncetime=1)
 
 while 1:
   try:
