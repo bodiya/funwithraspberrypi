@@ -8,51 +8,21 @@
 
 #
 # Install Motion Debian Package
+# as well as libjpeg62
 #
 
-$ sudo apt-get install motion
-
-
-#
-# Install libjpeg62 library
-#
-
-$ sudo apt-get install libjpeg62
+$ sudo apt-get install motion libjpeg62
 
 
 #
 # Install a modified version of Motion created by dozencrows
 #
 
-$ cd ~/
+$ cd
 $ mkdir mmal
 $ cd mmal
-
 $ wget https://www.dropbox.com/s/xdfcxm5hu71s97d/motion-mmal.tar.gz
-
 $ tar -zxvf motion-mmal.tar.gz
-
-#
-# Configure the motion application
-#
-
-$ nano motion-mmalcam.conf
-
-Update the following names with the values indicated:
-
-width 640
-
-height 480
-
-rotate 180
-
-target_dir /home/pi/m-video
-
-output_pictures off
-
-text_left Pi-cam %t
-
-logfile /home/pi/mmal/motion.log
 
 
 #
@@ -63,10 +33,17 @@ $ mv motion motion-mmal
 
 
 #
+# Download the updated configuration
+#
+
+$ wget https://www.dropbox.com/s/x3cucc8n0i3i4k2/motion-mmalpi.conf
+
+
+#
 # Start the motion application
 #
 
-$ ./motion-mmal -n -c motion-mmalcam.conf
+$ ./motion-mmal -n -c motion-mmalpi.conf
 
 
 #
